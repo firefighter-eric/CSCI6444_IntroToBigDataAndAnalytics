@@ -1,0 +1,185 @@
+---
+title: "R Notebook"
+output: html_notebook
+---
+
+# preprocessing
+```{r}
+library(psych)
+library(caret)
+library(class)
+library(factoextra)
+library(gmodels)
+```
+
+## read data
+```{r}
+train <-
+  read.csv("adult.data", header = FALSE, stringsAsFactors = FALSE)
+test <-
+  read.csv("adult.test", header = FALSE, stringsAsFactors = FALSE)
+title = c(
+  "age",
+  "workclass",
+  "fnlwgt",
+  "education",
+  "education_num",
+  "marital_status",
+  "occupation",
+  "relationship",
+  "race",
+  "sex",
+  "capital_gain",
+  "capital_loss",
+  "hours_per_week",
+  "native_country",
+  "label"
+)
+names(train) = title
+names(test) = title
+```
+
+## summary
+```{r}
+summary(train)
+```
+
+## subset
+```{r}
+sub = c("age",
+        "fnlwgt",
+        "education_num",
+        "capital_gain",
+        "capital_loss",
+        "hours_per_week")
+
+train = subset(train,
+               workclass != " ?" &
+                 occupation  != " ?" &
+                 native_country  != " ?" & label != " ?")
+
+
+test = subset(test,
+              workclass != " ?" &
+                occupation  != " ?" &
+                native_country  != " ?" & label != " ?")
+
+train.x = train[sub]
+train.y = train["label"]
+
+test.x = test[sub]
+test.y = test["label"]
+```
+
+## plot data pairwise
+```{r}
+plot(train.x)
+```
+
+## corr
+```{r}
+cov(train.x)
+```
+
+
+## map: one hot encode
+```{r}
+mainEffects = dummyVars( ~ ., train)
+train.onehot = predict(mainEffects, train)
+train.onehot = data.frame(train.onehot)
+train.onehot.name = names(train.onehot)
+```
+
+## normalization
+```{r}
+normalize <- function(x) {
+  (x - min(x)) / (max(x) - min(x))
+}
+
+train.x.norm = as.data.frame(lapply(train.x, normalize))
+test.x.norm = as.data.frame(lapply(test.x, normalize))
+```
+
+# 3. Clustering
+## KMeans
+```{r}
+k_list = 2:10
+my_kmeans_centers = vector()
+train.cluster = vector()
+wss = vector()
+for (k in k_list) {
+  res = kmeans(train.x.norm, k)
+  my_kmeans_centers[k] = res["centers"]
+  train.cluster[k] = res["cluster"]
+  wss[k] = sum(res$withinss)
+  cat("k:", k, "\twss:", wss[k], "\n")
+}
+```
+### plot
+```{r}
+train.kmeans = kmeans(train.x.norm, 10)
+fviz_cluster(train.kmeans, train.x.norm)
+```
+
+
+
+
+```{r}
+plot(k_list, wss[k_list], xlab = "k", ylab = "wss")
+```
+
+
+## kNN
+```{r}
+my_knn = vector()
+cl = train.y$label
+
+for (k in 2:10) {
+  res = knn(train.x.norm, test.x.norm, cl = cl, k)
+  cat("k:", k, "\tsummary:", summary(res), "\n")
+}
+```
+
+
+## iCluster
+```{r}
+
+```
+
+# 4. Prediction
+```{r}
+predict <- function(y1, y2) {
+  L = length(y1)
+  count = 0
+  for (i in 1:L) {
+    if (y1[i] == y2[i]) {
+      count = count + 1
+    }
+  }
+  count / L
+}
+```
+
+
+## kmeans
+```{r}
+test.x.norm.k3 = kmeans(test.x.norm, 3)
+test.x.norm.k5 = kmeans(test.x.norm, 5)
+test.x.norm.k7 = kmeans(test.x.norm, 7)
+test.x.norm.k9 = kmeans(test.x.norm, 9)
+```
+## KNN
+```{r}
+test.knn3 = knn(train.x.norm, test.x.norm, train.cluster[[3]], 3)
+CrossTable(test.x.norm.k3$cluster, test.knn3)
+
+test.knn5 = knn(train.x.norm, test.x.norm, train.cluster[[5]], 5)
+CrossTable(test.x.norm.k5$cluster, test.knn5)
+
+test.knn7 = knn(train.x.norm, test.x.norm, train.cluster[[7]], 7)
+CrossTable(test.x.norm.k7$cluster, test.knn7)
+
+test.knn9 = knn(train.x.norm, test.x.norm, train.cluster[[9]], 9)
+CrossTable(test.x.norm.k9$cluster, test.knn9)
+```
+

@@ -1,0 +1,4 @@
+"0","normalize <- function(x) { (x-min(x)) / (max(x) - min(x)) }"
+"0",""
+"0","train.x.norm = as.data.frame(lapply(train.x, normalize))"
+"0","test.x.norm = as.data.frame(lapply(test.x, normalize))"
