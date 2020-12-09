@@ -1,0 +1,68 @@
+---
+title: "R Notebook"
+output:
+  pdf_document: default
+---
+```{r}
+library(gdata)
+library(tm)
+```
+
+
+
+```{r}
+text = scan("TarzanOfTheApes.txt", what = character(0), sep = "\n", encoding="UTF-8")
+```
+## split to chapter
+```{r}
+chapters = list()
+chapter_idx = 0
+
+concentrate <- function(start, end) {
+  s = paste(text[start:end], collapse = "")
+  gsub("\"", " ", s)
+}
+
+for (i in 1: length(text)) {
+  if (startsWith(text[i], "Chapter")) {
+    if (chapter_idx > 0){
+      chapters[[chapter_idx]] = concentrate(line_flag, i)
+    }
+    chapter_idx = chapter_idx + 1
+    line_flag = i + 1
+  }
+
+  if (startsWith(text[i], "father was.")){
+    chapters[[chapter_idx]] = concentrate(line_flag, i)
+    break
+  }
+}
+
+```
+
+## 10 longest words
+
+```{r}
+words = list()
+for (chapter in chapters) {
+  tmp = strsplit(chapter, " ")
+  for (word in tmp)
+    words = append(words, word)
+}
+
+max_length = 0
+words = unique(words)
+
+# for (word in word_list) {
+#   if length(word) > max_length
+# }
+#   
+```
+
+## 10 longest sentences 
+```{r}
+setwd('./data')
+getwd()
+d = VCorpus(DirSource(".", ignore.case = TRUE, mode = "text", encoding="UTF-8"))
+```
+
