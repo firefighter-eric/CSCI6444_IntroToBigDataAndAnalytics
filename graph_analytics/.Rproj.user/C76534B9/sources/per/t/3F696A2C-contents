@@ -1,0 +1,85 @@
+---
+output:
+  pdf_document: default
+  html_document: default
+---
+# P5
+``` {r}
+library(igraph)
+
+CA.GrQc <- read.delim("CA-GrQc.txt", header=FALSE, comment.char="#")
+G = graph_from_data_frame(CA.GrQc, directed = FALSE)
+G = simplify(G)
+v = V(G)
+e = E(G)
+```
+## 5.1 central nodes
+```{r}
+cd = centr_degree(G)
+max_index = which.max(cd[["res"]])
+c = v[max_index]
+print(c)
+```
+## 5.2 longest path
+### solution 1
+```{r}
+sp1 = shortest.paths(G, v, v)
+sp1[is.infinite(sp1)] = -1
+longest_path = max(sp1)
+print(longest_path)
+```
+### solution 2
+```{r}
+sp2_len = diameter(G)
+sp2 = get_diameter(G)
+print(sp2_len)
+print(sp2)
+```
+## 5.3 largest clique
+```{r}
+lcq = largest_cliques(G)
+print(lcq)
+```
+## 5.4 ego(s)
+```{r}
+my_ego = ego(
+  G, 
+  order = 1, 
+  nodes = V(G), 
+  mode = c("all", "out", "in"),
+  mindist = 0
+)
+maxegolength = 0
+egores = 0
+count = 0
+for(i in 1:5242){
+  if (maxegolength < length(my_ego[[i]])){
+    maxegolength = length(my_ego[[i]])
+    egores = i
+  }
+}
+#check how many longest arrays in the list
+#for(i in 1:5242){
+#  if ( length(my_ego[[i]]) == 82) count = count + 1
+#}
+#print(count)
+#count = 1
+print(maxegolength)
+my_ego[[egores]]
+```
+## 5.5 power_centrality
+```{r}
+pc = power_centrality(
+  G,
+  nodes = V(G),
+  loops = FALSE,
+  exponent = 0.9,
+  rescale = FALSE,
+  tol = 1e-07,
+  sparse = TRUE
+)
+max_pc = max(pc)
+index_max_pc = which.max(pc)
+print(max_pc)
+print(v[index_max_pc])
+```

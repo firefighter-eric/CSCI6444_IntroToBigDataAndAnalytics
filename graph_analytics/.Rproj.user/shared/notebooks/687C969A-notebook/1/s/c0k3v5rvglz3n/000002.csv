@@ -1,0 +1,11 @@
+"0","cd = centr_degree(G)"
+"0","max_index = which.max(cd[[""res""]])"
+"0","c = v[max_index]"
+"0","print(c)"
+"1","+ 1/5242 vertex, named, from c30b44d:
+"
+"1",""
+"1","[1] 21012"
+"1","
+"
+"1",""

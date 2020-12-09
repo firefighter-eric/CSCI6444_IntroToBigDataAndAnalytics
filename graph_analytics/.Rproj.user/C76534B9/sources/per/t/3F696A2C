@@ -1,0 +1,26 @@
+{
+    "id": "3F696A2C",
+    "path": "~/Documents/RProject/project 1/notebook.Rmd",
+    "project_path": "notebook.Rmd",
+    "type": "r_markdown",
+    "hash": "2765358840",
+    "contents": "",
+    "dirty": false,
+    "created": 1601358549999.0,
+    "source_on_save": false,
+    "relative_order": 3,
+    "properties": {
+        "tempName": "Untitled1",
+        "chunk_output_type": "inline",
+        "cursorPosition": "11,15",
+        "scrollLine": "0"
+    },
+    "folds": "",
+    "lastKnownWriteTime": 1601358470,
+    "encoding": "UTF-8",
+    "collab_server": "",
+    "source_window": "",
+    "last_content_update": 1601358574411,
+    "read_only": false,
+    "read_only_alternatives": []
+}

@@ -1,0 +1,7 @@
+"0","library(igraph)"
+"0",""
+"0","CA.GrQc <- read.delim(""CA-GrQc.txt"", header=FALSE, comment.char=""#"")"
+"0","G = graph_from_data_frame(CA.GrQc, directed = FALSE)"
+"0","G = simplify(G)"
+"0","v = V(G)"
+"0","e = E(G)"

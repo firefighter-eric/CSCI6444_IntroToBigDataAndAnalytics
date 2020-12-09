@@ -1,0 +1,8 @@
+"0","sp1 = shortest.paths(G, v, v)"
+"0","sp1[is.infinite(sp1)] = -1"
+"0","longest_path = max(sp1)"
+"0","print(longest_path)"
+"1","[1]"
+"1"," 17"
+"1","
+"

@@ -1,0 +1,7 @@
+"0","my_ego = ego("
+"0","    G, "
+"0","    order = 1, "
+"0","    nodes = V(G), "
+"0","    mode = c(""all"", ""out"", ""in""),"
+"0","    mindist = 0"
+"0",")"
