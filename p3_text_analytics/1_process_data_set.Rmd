@@ -1,0 +1,41 @@
+---
+title: "R Notebook"
+output:
+  pdf_document: default
+---
+```{r}
+text = scan("TarzanOfTheApes.txt", what = character(0), sep = "\n", encoding="UTF-8")
+```
+## split to chapter
+```{r}
+chapter = list()
+chapter_idx = 0
+
+concentrate <- function(start, end) {
+  s = paste(text[start:end], collapse = "")
+  gsub("\"", " ", s)
+}
+
+for (i in 1: length(text)) {
+  if (startsWith(text[i], "Chapter")) {
+    if (chapter_idx > 1){
+      chapter[[chapter_idx]] = concentrate(line_flag, i)
+    }
+    chapter_idx = chapter_idx + 1
+    line_flag = i + 1
+  }
+
+  if (startsWith(text[i], "father was.")){
+    chapter[[chapter_idx]] = concentrate(line_flag, i)
+    break
+  }
+}
+
+```
+## concentrate sentences
+```{r}
+
+```
+
+
+
