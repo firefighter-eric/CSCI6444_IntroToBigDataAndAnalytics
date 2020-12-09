@@ -1,2 +1,0 @@
-"0","train.kmeans = kmeans(train.x.norm, 10)"
-"0","fviz_cluster(train.kmeans, train.x.norm)"

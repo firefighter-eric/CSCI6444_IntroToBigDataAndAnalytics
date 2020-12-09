@@ -1,4 +1,0 @@
-"0","mainEffects = dummyVars(~., train)"
-"0","train.onehot = predict(mainEffects, train)"
-"0","train.onehot = data.frame(train.onehot)"
-"0","train.onehot.name = names(train.onehot)"

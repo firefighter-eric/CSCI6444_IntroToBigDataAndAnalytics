@@ -1,4 +1,0 @@
-"0","test.x.norm.k3 = kmeans(test.x.norm, 3)"
-"0","test.x.norm.k5 = kmeans(test.x.norm, 5)"
-"0","test.x.norm.k7 = kmeans(test.x.norm, 7)"
-"0","test.x.norm.k9 = kmeans(test.x.norm, 9)"
