@@ -6,14 +6,12 @@ output:
 ```{r}
 library(gdata)
 library(tm)
+library(wordcloud)
 ```
 
 
-
+## load text
 ```{r}
-# text = scan("TarzanOfTheApes.txt", what = character(0), sep = "\n", encoding="UTF-8")
-
-
 setwd('./data')
 getwd()
 TarzanOfTheApes = VCorpus(DirSource(".", ignore.case = TRUE, mode = "text", encoding="UTF-8"))
@@ -48,11 +46,10 @@ for (i in 1: length(text)) {
 ```
 
 ## 10 longest words
-
 ```{r}
 words = list()
 for (chapter in chapters) {
-  tmp = strsplit(chapter, " ")
+  tmp = strsplit(chapter, "[.|?|!|,| ]")
   for (word in tmp)
     words = append(words, word)
 }
@@ -68,7 +65,7 @@ words[word_index]
 ```{r}
 sentences = list()
 for (chapter in chapters) {
-  tmp = strsplit(chapter, "w")
+  tmp = strsplit(chapter, "[.|?|!]")
   for (sent in tmp)
     sentences = append(sentences, sent)
 }
@@ -77,3 +74,33 @@ sentence_length = lapply(sentences, nchar)
 sentence_index = order(unlist(sentence_length), decreasing = TRUE)[1:10]
 sentences[sentence_index]
 ```
+## dendrogram
+```{r}
+
+# df = data.frame(text)
+
+removeNumPunct = function(x) gsub("[^[:alpha:][:space:]*]", "", x)
+TarzanCl = tm_map(TarzanOfTheApes, tm::content_transformer(removeNumPunct))
+TarzanLow<-tm_map(TarzanCl, tm::content_transformer(tolower))
+
+myStopwords = c(tm::stopwords("english"))
+TarzanStop = tm::tm_map(TarzanLow, tm::removeWords, myStopwords)
+
+TarzanStopTDM = tm::TermDocumentMatrix(TarzanStop)
+freqTerms = tm::findFreqTerms(TarzanStopTDM, lowfreq=5)
+
+Tarzantf = tm::termFreq(TarzanStop[[1]])
+
+Tarzandf = as.data.frame(TarzanStopTDM[[1]])
+TarzanDist = dist(Tarzandf)
+TarzanDG = hclust(TarzanDist, method="ward.D2")
+str(TarzanDG)
+plot(TarzanDG)
+```
+
+```{r}
+# words = names(Tarzantf)
+# pal = brewer.pal(9, "BuGn")
+# TarzanWC = wordcloud(words, Tarzantf, colors = pal[-(1:4)])
+```
+
