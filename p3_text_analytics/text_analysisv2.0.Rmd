@@ -1,0 +1,162 @@
+---
+title: "R Notebook"
+output:
+  pdf_document: default
+---
+```{r}
+library(gdata)
+library(tm)
+library(wordcloud)
+```
+
+
+## load text
+```{r}
+setwd('C:\\Users\\yh960\\Desktop\\p3_text_analytics\\data\\')
+getwd()
+TarzanOfTheApes = VCorpus(DirSource(".", ignore.case = TRUE, mode = "text", encoding="UTF-8"))
+ttext = TarzanOfTheApes[[1]]
+text = ttext[[1]]
+```
+## split to chapter
+```{r}
+chapters = list()
+chapter_idx = 0
+
+concentrate <- function(start, end) {
+  s = paste(text[start:end], collapse = "")
+  gsub("\"", " ", s)
+}
+
+for (i in 1: length(text)) {
+  if (startsWith(text[i], "Chapter")) {
+    if (chapter_idx > 0){
+      chapters[[chapter_idx]] = concentrate(line_flag, i)
+    }
+    chapter_idx = chapter_idx + 1
+    line_flag = i + 1
+  }
+
+  if (startsWith(text[i], "father was.")){
+    chapters[[chapter_idx]] = concentrate(line_flag, i)
+    break
+  }
+}
+
+```
+
+## 10 longest words
+```{r}
+words = list()
+for (chapter in chapters) {
+  tmp = strsplit(chapter, "[.|?|!|,| ]")
+  for (word in tmp)
+    words = append(words, word)
+}
+words = unique(words)
+
+words_length = lapply(words, nchar)
+word_index = order(unlist(words_length), decreasing = TRUE)[1:10]
+words[word_index]
+
+```
+
+## 10 longest sentences 
+```{r}
+sentences = list()
+for (chapter in chapters) {
+  tmp = strsplit(chapter, "[.|?|!]")
+  for (sent in tmp)
+    sentences = append(sentences, sent)
+}
+
+sentence_length = lapply(sentences, nchar)
+sentence_index = order(unlist(sentence_length), decreasing = TRUE)[1:10]
+#sentences[sentence_index]
+sentencestop10 = sentences[sentence_index]
+sentencestop10
+```
+## dendrogram
+```{r}
+
+# df = data.frame(text)
+
+removeNumPunct = function(x) gsub("[^[:alpha:][:space:]*]", "", x)
+TarzanCl = tm_map(TarzanOfTheApes, tm::content_transformer(removeNumPunct))
+TarzanLow<-tm_map(TarzanCl, tm::content_transformer(tolower))
+
+myStopwords = c(tm::stopwords("english"))
+TarzanStop = tm::tm_map(TarzanLow, tm::removeWords, myStopwords)
+TarzanStopTDM = tm::TermDocumentMatrix(TarzanStop)
+
+Tarzandf = as.data.frame(TarzanStopTDM[[1]])
+TarzanDist = dist(Tarzandf)
+TarzanDG = hclust(TarzanDist, method="ward.D2")
+str(TarzanDG)
+plot(TarzanDG)
+```
+
+```{r}
+# words = names(Tarzantf)
+# pal = brewer.pal(9, "BuGn")
+# TarzanWC = wordcloud(words, Tarzantf, colors = pal[-(1:4)])
+```
+
+## word frequency
+```{r}
+freqTerms = tm::findFreqTerms(TarzanStopTDM, lowfreq=5)
+Tarzantf = tm::termFreq(TarzanStop[[1]])
+tm::inspect(TarzanStopTDM)
+
+```
+
+## question d
+```{r}
+setDict("/Users/yh960/Documents/R/win-library/4.0/dict")
+initDict("/Users/yh960/Documents/R/win-library/4.0/dict")
+if(initDict()) {
+  
+  filter <- getTermFilter("StartsWithFilter", "car", TRUE)
+  sentencestop10 <- getIndexTerms("NOUN", 1000, filter)
+  synsets = getSynsets(sentencestop10[[1]])
+  related <- getRelatedSynsets(synsets[[1]], "!")
+  result = sapply(related, getWord)
+}
+synsets
+
+```
+
+## question f
+```{r}
+
+```
+
+## question g
+```{r}
+## stringi(Count the Number of Text Boundaries)
+print("stringi(Count the Number of Text Boundaries)")
+stri_count_boundaries(TarzanStop, type='word')
+stri_count_boundaries(TarzanStop, type='sentence')
+stri_count_boundaries(TarzanStop, type='character')
+stri_count_words(TarzanStop)
+```
+## 这个包不知道咋写
+```{r}
+## corpustools
+Tarzandf = as.data.frame(TarzanStopTDM[[1]])
+is.data.frame(Tarzandf)
+#tc = create_tcorpus(Tarzandf, split_sentences = TRUE)
+```
+
+````{r}
+## quanteda(Count the number of sentences)
+quanteda = nsentence(as.character(ttext))
+quanteda
+```
+
+```{r}
+## sentiment (Count words without stopwords)
+countWords(TarzanStop)
+```
+
+
