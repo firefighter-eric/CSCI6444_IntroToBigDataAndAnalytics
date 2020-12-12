@@ -7,6 +7,7 @@ output:
 library(gdata)
 library(tm)
 library(wordcloud)
+library(ngram)
 ```
 
 
@@ -41,6 +42,9 @@ for (i in 1: length(text)) {
     break
   }
 }
+
+```
+```{r}
 
 ```
 
@@ -101,5 +105,41 @@ plot(TarzanDG)
 # words = names(Tarzantf)
 # pal = brewer.pal(9, "BuGn")
 # TarzanWC = wordcloud(words, Tarzantf, colors = pal[-(1:4)])
+```
+
+## ngram
+```{r}
+tmp = sentences[sentence_index]
+sentences10 = " "
+for (i in 1:10) {
+  sentences10 = paste(sentences10, tmp[[i]], " <end> ")
+}
+
+tmp = strsplit(sentences10, "[.?!, -]")
+sent_split = list()
+s = ""
+count = 0
+for (word in tmp[[1]]) {
+  # word = tmp[[word_idx]]
+  # print(word)
+  
+  if (nchar(word) > 6) {
+    s = paste(s, " ", word)
+    count = count + 1
+  } else if (s != "") {
+    sent_split = append(sent_split, s)
+    s = ""
+  }
+}
+# ng2
+sent_ng = paste(sent_split, " <end> ")
+ng2 = ngram(sent_ng, 1)
+print(ng2, output="truncated")
+```
+
+## ng3
+```{r}
+ng3 = ngram(sent_ng, 2)
+print(ng3, output="truncated")
 ```
 
