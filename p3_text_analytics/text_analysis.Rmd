@@ -24,8 +24,7 @@ chapters = list()
 chapter_idx = 0
 
 concentrate <- function(start, end) {
-  s = paste(text[start:end], collapse = "")
-  gsub("\"", " ", s)
+  s = paste(text[start:end], collapse = " ")
 }
 
 for (i in 1: length(text)) {
@@ -49,7 +48,7 @@ for (i in 1: length(text)) {
 ```{r}
 words = list()
 for (chapter in chapters) {
-  tmp = strsplit(chapter, "[.|?|!|,| ]")
+  tmp = strsplit(chapter, "[.?!, -]")
   for (word in tmp)
     words = append(words, word)
 }
@@ -65,7 +64,7 @@ words[word_index]
 ```{r}
 sentences = list()
 for (chapter in chapters) {
-  tmp = strsplit(chapter, "[.|?|!]")
+  tmp = strsplit(chapter, "[.?!]")
   for (sent in tmp)
     sentences = append(sentences, sent)
 }
@@ -94,7 +93,7 @@ Tarzantf = tm::termFreq(TarzanStop[[1]])
 Tarzandf = as.data.frame(TarzanStopTDM[[1]])
 TarzanDist = dist(Tarzandf)
 TarzanDG = hclust(TarzanDist, method="ward.D2")
-str(TarzanDG)
+# str(TarzanDG)
 plot(TarzanDG)
 ```
 
