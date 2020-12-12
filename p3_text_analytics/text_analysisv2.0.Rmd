@@ -12,7 +12,7 @@ library(wordcloud)
 
 ## load text
 ```{r}
-setwd('C:\\Users\\yh960\\Desktop\\p3_text_analytics\\data\\')
+setwd('./data')
 getwd()
 TarzanOfTheApes = VCorpus(DirSource(".", ignore.case = TRUE, mode = "text", encoding="UTF-8"))
 ttext = TarzanOfTheApes[[1]]
@@ -24,7 +24,7 @@ chapters = list()
 chapter_idx = 0
 
 concentrate <- function(start, end) {
-  s = paste(text[start:end], collapse = "")
+  s = paste(text[start:end], collapse = " ")
   gsub("\"", " ", s)
 }
 
@@ -49,7 +49,7 @@ for (i in 1: length(text)) {
 ```{r}
 words = list()
 for (chapter in chapters) {
-  tmp = strsplit(chapter, "[.|?|!|,| ]")
+  tmp = strsplit(chapter, "[.?!, -]")
   for (word in tmp)
     words = append(words, word)
 }
@@ -92,7 +92,7 @@ TarzanStopTDM = tm::TermDocumentMatrix(TarzanStop)
 Tarzandf = as.data.frame(TarzanStopTDM[[1]])
 TarzanDist = dist(Tarzandf)
 TarzanDG = hclust(TarzanDist, method="ward.D2")
-str(TarzanDG)
+# str(TarzanDG)
 plot(TarzanDG)
 ```
 
