@@ -44,9 +44,7 @@ for (i in 1: length(text)) {
 }
 
 ```
-```{r}
 
-```
 
 ## 10 longest words
 ```{r}
@@ -75,13 +73,10 @@ for (chapter in chapters) {
 
 sentence_length = lapply(sentences, nchar)
 sentence_index = order(unlist(sentence_length), decreasing = TRUE)[1:10]
-sentences[sentence_index]
+sent10 = sentences[sentence_index]
 ```
 ## dendrogram
 ```{r}
-
-# df = data.frame(text)
-
 removeNumPunct = function(x) gsub("[^[:alpha:][:space:]*]", "", x)
 TarzanCl = tm_map(TarzanOfTheApes, tm::content_transformer(removeNumPunct))
 TarzanLow<-tm_map(TarzanCl, tm::content_transformer(tolower))
