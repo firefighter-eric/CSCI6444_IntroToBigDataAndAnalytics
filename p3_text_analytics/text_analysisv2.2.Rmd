@@ -184,7 +184,7 @@ stri_count(TarzanStop, fixed='is')
 
 
 ```
-## 这个包不知道咋写
+## corpustools
 ```{r}
 ## corpustools
 en_stop = get_stopwords('english')
